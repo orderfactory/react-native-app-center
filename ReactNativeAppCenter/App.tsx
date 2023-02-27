@@ -8,14 +8,15 @@
 import React from 'react';
 import type {PropsWithChildren} from 'react';
 import {
+  Button,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   useColorScheme,
-  View,
-} from 'react-native';
+  View
+} from "react-native";
 
 import {
   Colors,
@@ -55,6 +56,10 @@ function Section({children, title}: SectionProps): JSX.Element {
   );
 }
 
+function onPressEmulateCrash(): void {
+  throw new Error('This is a test javascript crash!');
+}
+
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -76,9 +81,8 @@ function App(): JSX.Element {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
+          <Section title="AppCenter Sample">
+            <Button onPress={onPressEmulateCrash} title="Emulate Crash" />
           </Section>
           <Section title="See Your Changes">
             <ReloadInstructions />
