@@ -8,6 +8,7 @@
 import React from 'react';
 import type {PropsWithChildren} from 'react';
 import {
+  Alert,
   Button,
   SafeAreaView,
   ScrollView,
@@ -25,6 +26,8 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+
+import Crashes, { ErrorAttachmentLog, ErrorReport } from "appcenter-crashes";
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -59,6 +62,27 @@ function Section({children, title}: SectionProps): JSX.Element {
 function onPressEmulateCrash(): void {
   throw new Error('This is a test javascript crash!');
 }
+
+Crashes.setListener({
+  onBeforeSending: (_report: ErrorReport) => {
+    Alert.alert('after Crashes.process and before sending the crash.');
+  },
+  onSendingFailed: (_report: ErrorReport) => {
+    Alert.alert('crash report could not be sent.');
+  },
+  onSendingSucceeded: (_report: ErrorReport) => {
+    Alert.alert('crash report sent successfully.');
+  },
+  getErrorAttachments: (_report: ErrorReport) => {
+    return (async () => {
+      const testAttachment = ErrorAttachmentLog.attachmentWithText(
+        'Hello text attachment!',
+        'hello.txt',
+      );
+      return [testAttachment];
+    })();
+  },
+});
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
